@@ -54,7 +54,9 @@ class Game:
             self.blue.jump = True
         elif event.key == pygame.K_s:
             #move blue down
-            self.blue.moving_down = True
+            self.blue.crouched = True
+        elif event.key == pygame.K_1:
+            self.blue.punch = True
 
     def _check_keyup_events(self, event):
         """Respond to key releases."""
@@ -63,7 +65,7 @@ class Game:
         elif event.key == pygame.K_a:
             self.blue.moving_left = False
         elif event.key == pygame.K_s:
-            self.blue.moving_down = False
+            self.blue.crouched = False
 
 
 
