@@ -12,9 +12,11 @@ class Blue_Fighter(Sprite):
         self.screen = fg_game.screen
         self.settings = fg_game.settings
         self.screen_rect = fg_game.screen.get_rect()
+        self.blue_punch_time = fg_game.blue_punch_time
+        self.current_time = pygame.time.get_ticks()
 
         #load initial image for blue fighter
-        self.image =pygame.image.load('Blue/Blue_Neutral.bmp')
+        self.image = pygame.image.load('Blue/Blue_Neutral.bmp')
         self.rect = self.image.get_rect()
 
         #extra images
@@ -36,9 +38,23 @@ class Blue_Fighter(Sprite):
         self.punch = False
         self.attacking = False
 
+    def reset_punch(self):
+        if self.crouched:
+            self.image = pygame.image.load('Blue/Blue_Crouch.bmp')
+            if self.rect.bottom < self.screen_rect.bottom + 20:
+                self.y = self.y + 80
+            print("punched")
+
+        elif self.crouched == False:
+            self.image = pygame.image.load('Blue/Blue_Neutral.bmp')
+            if self.rect.bottom > self.screen_rect.bottom:
+                self.y = self.y - 80
+            print("punched")
+
 
     def update(self):
         """Update the ship's position based on the movement flag."""
+        self.screen.blit(self.image, self.rect)
         #update Blue's x and y value, not the rect.
         if self.moving_right and self.rect.right < self.screen_rect.right:
             if self.crouched:
@@ -63,36 +79,27 @@ class Blue_Fighter(Sprite):
             self.y += self.settings.Blue_fall_speed
 
         #crouch behavior
-        if self.crouched:
+        if self.crouched and self.punch == False:
             self.image = pygame.image.load('Blue/Blue_Crouch.bmp')
             if self.rect.bottom < self.screen_rect.bottom+20:
                 self.y = self.y + 80
+            print("crouch")
 
-        elif self.crouched == False:
+
+        elif self.crouched == False and self.punch == False:
             self.image = pygame.image.load('Blue/Blue_Neutral.bmp')
             if self.rect.bottom > self.screen_rect.bottom:
                 self.y = self.y - 80
+            print("crouch")
 
         #punch
-        if self.punch:
-            print(self.image)
-            if self.crouched == False:
-                self.image = self.base_punch
-                print(self.image)
-            elif self.crouched:
-                self.image = self.low_punch
-            self.screen.blit(self.image, self.rect)
-            initial = pygame.time.get_ticks()
-            current = pygame.time.get_ticks()
-            while current < initial+500:
-                self.screen.blit(self.image, self.rect)
-                current = pygame.time.get_ticks()
+        if self.punch and self.current_time >= self.blue_punch_time + 5000:
             self.reset_punch()
+            print("reset")
+            self.punch = False
 
-
-
-
-
+        print("current",self.current_time,"punch",self.blue_punch_time)
+        print(self.image)
 
         #update rect object.
         self.rect.x = self.x
@@ -100,9 +107,6 @@ class Blue_Fighter(Sprite):
 
         self.screen.blit(self.image, self.rect)
 
-    def reset_punch(self):
-        self.punch = False
-        self.blitme()
 
     def blitme(self):
         """Draw the ship at its current location."""

@@ -3,6 +3,7 @@ import sys
 from Settings import Settings
 from Blue_Fighter import Blue_Fighter
 import time
+import multiprocessing
 
 #make fighting game
 
@@ -16,7 +17,8 @@ class Game:
         self.settings.screen_width = self.screen.get_rect().width
         self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Fighter")
-        self.time = time.time()
+        self.blue_punch_time = pygame.time.get_ticks()
+        self.current_time = pygame.time.get_ticks()
 
         self.blue = Blue_Fighter(self)
 
@@ -28,6 +30,7 @@ class Game:
 
         #make the most recently drawn screen visible.
         pygame.display.flip()
+        
 
     def _check_events(self):
         """respond to keypresses and mouse events."""
@@ -56,7 +59,9 @@ class Game:
             #move blue down
             self.blue.crouched = True
         elif event.key == pygame.K_1:
-            self.blue.punch = True
+            self.punch("blue")
+            self.blue.blue_punch_time = pygame.time.get_ticks()
+
 
     def _check_keyup_events(self, event):
         """Respond to key releases."""
@@ -67,16 +72,30 @@ class Game:
         elif event.key == pygame.K_s:
             self.blue.crouched = False
 
+    def punch(self,color):
+        if color == "blue":
+            self.blue.punch = True
+            print(self.blue.image)
+            if self.blue.crouched == False:
+                self.blue.image = self.blue.base_punch
+                print(self.blue.image)
+            elif self.blue.crouched:
+                self.blue.image = self.blue.low_punch
+
+
 
 
     def run_game(self):
         """Start the main loop for the game."""
         while True:
+            self.current_time = pygame.time.get_ticks()
+            self.blue.current_time = self.current_time
             self._check_events()
             self.blue.update()
 
 
             self._update_screen()
+
 
 if __name__ == '__main__':
     # make a game instance, and run the game.
