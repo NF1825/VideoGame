@@ -30,7 +30,7 @@ class Game:
 
         #make the most recently drawn screen visible.
         pygame.display.flip()
-        
+
 
     def _check_events(self):
         """respond to keypresses and mouse events."""
@@ -58,8 +58,11 @@ class Game:
         elif event.key == pygame.K_s:
             #move blue down
             self.blue.crouched = True
-        elif event.key == pygame.K_1:
+        elif event.key == pygame.K_1 and self.blue.kick == False:
             self.punch("blue")
+            self.blue.blue_punch_time = pygame.time.get_ticks()
+        elif event.key == pygame.K_2 and self.blue.punch == False:
+            self.kick("blue")
             self.blue.blue_punch_time = pygame.time.get_ticks()
 
 
@@ -82,6 +85,13 @@ class Game:
             elif self.blue.crouched:
                 self.blue.image = self.blue.low_punch
 
+    def kick(self, color):
+        if color == "blue":
+            self.blue.kick = True
+            if self.blue.crouched == False:
+                self.blue.image = self.blue.low_kick_prep
+            elif self.blue.crouched:
+                self.blue.image = self.blue.base_kick_prep
 
 
 

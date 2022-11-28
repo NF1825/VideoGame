@@ -22,6 +22,10 @@ class Blue_Fighter(Sprite):
         #extra images
         self.base_punch = pygame.image.load('Blue/Blue_Punch2.bmp')
         self.low_punch = pygame.image.load('Blue/Blue_Low_Punch.bmp')
+        self.base_kick_prep = pygame.image.load('Blue/Blue_High_Kick_Prep.bmp')
+        self.base_kick = pygame.image.load('Blue/Blue_High_Kick.bmp')
+        self.low_kick_prep = pygame.image.load('Blue/Blue_Low_Kick_Prep.bmp')
+        self.low_kick = pygame.image.load('Blue/Blue_Low_Kick.bmp')
 
         # Start each new ship at the bottom center of the screen.
         self.rect.midbottom = self.screen_rect.midbottom
@@ -36,6 +40,7 @@ class Blue_Fighter(Sprite):
         self.jump = False
         self.crouched = False
         self.punch = False
+        self.kick = False
         self.attacking = False
 
     def reset_punch(self):
@@ -50,6 +55,27 @@ class Blue_Fighter(Sprite):
             if self.rect.bottom > self.screen_rect.bottom:
                 self.y = self.y - 80
             print("punched")
+
+    def reset_kick(self):
+        if self.crouched:
+            self.image = pygame.image.load('Blue/Blue_Crouch.bmp')
+            if self.rect.bottom < self.screen_rect.bottom + 20:
+                self.y = self.y + 80
+
+
+        elif self.crouched == False:
+            self.image = pygame.image.load('Blue/Blue_Neutral.bmp')
+            if self.rect.bottom > self.screen_rect.bottom:
+                self.y = self.y - 80
+
+
+    def finish_kick(self):
+        if self.crouched:
+            self.image = self.low_kick
+            self.attacking = True
+        elif self.crouched == False:
+            self.image = self.base_kick
+            self.attacking = True
 
 
     def update(self):
@@ -79,24 +105,31 @@ class Blue_Fighter(Sprite):
             self.y += self.settings.Blue_fall_speed
 
         #crouch behavior
-        if self.crouched and self.punch == False:
+        if self.crouched and self.punch == False and self.kick == False:
             self.image = pygame.image.load('Blue/Blue_Crouch.bmp')
             if self.rect.bottom < self.screen_rect.bottom+20:
                 self.y = self.y + 80
             print("crouch")
 
 
-        elif self.crouched == False and self.punch == False:
+        elif self.crouched == False and self.punch == False and self.kick == False:
             self.image = pygame.image.load('Blue/Blue_Neutral.bmp')
             if self.rect.bottom > self.screen_rect.bottom:
                 self.y = self.y - 80
             print("crouch")
 
         #punch
-        if self.punch and self.current_time >= self.blue_punch_time + 5000:
+        if self.punch and self.current_time >= self.blue_punch_time + 250:
             self.reset_punch()
             print("reset")
             self.punch = False
+
+        #kick
+        if self.kick and self.current_time >= self.blue_punch_time + 500:
+            self.finish_kick()
+        if self.kick and self.current_time >= self.blue_punch_time + 1000:
+            self.reset_kick()
+            self.kick = False
 
         print("current",self.current_time,"punch",self.blue_punch_time)
         print(self.image)
