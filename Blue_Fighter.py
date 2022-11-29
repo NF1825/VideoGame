@@ -48,25 +48,27 @@ class Blue_Fighter(Sprite):
             self.image = pygame.image.load('Blue/Blue_Crouch.bmp')
             if self.rect.bottom < self.screen_rect.bottom + 20:
                 self.y = self.y + 80
-            print("punched")
+            self.attacking = False
 
         elif self.crouched == False:
             self.image = pygame.image.load('Blue/Blue_Neutral.bmp')
             if self.rect.bottom > self.screen_rect.bottom:
                 self.y = self.y - 80
-            print("punched")
+            self.attacking = False
 
     def reset_kick(self):
         if self.crouched:
             self.image = pygame.image.load('Blue/Blue_Crouch.bmp')
             if self.rect.bottom < self.screen_rect.bottom + 20:
                 self.y = self.y + 80
+            self.attacking = False
 
 
         elif self.crouched == False:
             self.image = pygame.image.load('Blue/Blue_Neutral.bmp')
             if self.rect.bottom > self.screen_rect.bottom:
                 self.y = self.y - 80
+            self.attacking = False
 
 
     def finish_kick(self):
