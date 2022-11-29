@@ -22,7 +22,7 @@ class Blue_Fighter(Sprite):
         #extra images
         self.base_punch = pygame.image.load('Blue/Blue_Punch2.bmp')
         self.low_punch = pygame.image.load('Blue/Blue_Low_Punch.bmp')
-        self.base_kick_prep = pygame.image.load('Blue/Blue_High_Kick_Prep.bmp')
+        self.base_kick_prep = pygame.image.load('Blue/Blue_High_Kick_Prep_2.bmp')
         self.base_kick = pygame.image.load('Blue/Blue_High_Kick.bmp')
         self.low_kick_prep = pygame.image.load('Blue/Blue_Low_Kick_Prep.bmp')
         self.low_kick = pygame.image.load('Blue/Blue_Low_Kick.bmp')
@@ -125,9 +125,9 @@ class Blue_Fighter(Sprite):
             self.punch = False
 
         #kick
-        if self.kick and self.current_time >= self.blue_punch_time + 500:
+        if self.kick and self.current_time >= self.blue_punch_time + 250:
             self.finish_kick()
-        if self.kick and self.current_time >= self.blue_punch_time + 1000:
+        if self.kick and self.current_time >= self.blue_punch_time + 500:
             self.reset_kick()
             self.kick = False
 
