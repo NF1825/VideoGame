@@ -3,8 +3,8 @@ from pygame.sprite import Sprite
 import time
 
 
-class Blue_Fighter(Sprite):
-    """A class to represent a blue fighter"""
+class Gold_Fighter(Sprite):
+    """A class to represent a gold fighter"""
 
     def __init__(self, fg_game):
         """initialize the fighter"""
@@ -12,23 +12,23 @@ class Blue_Fighter(Sprite):
         self.screen = fg_game.screen
         self.settings = fg_game.settings
         self.screen_rect = fg_game.screen.get_rect()
-        self.blue_punch_time = fg_game.blue_punch_time
+        self.gold_punch_time = fg_game.gold_punch_time
         self.current_time = pygame.time.get_ticks()
 
-        #load initial image for blue fighter
-        self.image = pygame.image.load('Blue/Blue_Neutral.bmp')
+        #load initial image for gold fighter
+        self.image = pygame.image.load('Gold/Gold_Neutral.bmp')
         self.rect = self.image.get_rect()
 
         #extra images
-        self.base_punch = pygame.image.load('Blue/Blue_Punch2.bmp')
-        self.low_punch = pygame.image.load('Blue/Blue_Low_Punch.bmp')
-        self.base_kick_prep = pygame.image.load('Blue/Blue_High_Kick_Prep_2.bmp')
-        self.base_kick = pygame.image.load('Blue/Blue_High_Kick.bmp')
-        self.low_kick_prep = pygame.image.load('Blue/Blue_Low_Kick_Prep.bmp')
-        self.low_kick = pygame.image.load('Blue/Blue_Low_Kick.bmp')
+        self.base_punch = pygame.image.load('Gold/Gold_Punch.bmp')
+        self.low_punch = pygame.image.load('Gold/Gold_Low_Punch.bmp')
+        self.base_kick_prep = pygame.image.load('Gold/Gold_Kick_Prep.bmp')
+        self.base_kick = pygame.image.load('Gold/Gold_Kick.bmp')
+        self.low_kick_prep = pygame.image.load('Gold/Gold_Low_Kick_Prep.bmp')
+        self.low_kick = pygame.image.load('Gold/Gold_Low_Kick.bmp')
 
-        # Start each new blue fighter at the bottom left of the screen.
-        self.rect.bottomleft = self.screen_rect.bottomleft
+        # Start each new ship at the bottom right of the screen.
+        self.rect.bottomright = self.screen_rect.bottomright
 
         # store a decimal value for Blue's horizontal and vertical position.
         self.x = float(self.rect.x)
@@ -45,27 +45,27 @@ class Blue_Fighter(Sprite):
 
     def reset_punch(self):
         if self.crouched:
-            self.image = pygame.image.load('Blue/Blue_Crouch.bmp')
+            self.image = pygame.image.load('Gold/Gold_Crouched.bmp')
             if self.rect.bottom < self.screen_rect.bottom + 20:
                 self.y = self.y + 80
             self.attacking = False
 
         elif self.crouched == False:
-            self.image = pygame.image.load('Blue/Blue_Neutral.bmp')
+            self.image = pygame.image.load('Gold/Gold_Neutral.bmp')
             if self.rect.bottom > self.screen_rect.bottom:
                 self.y = self.y - 80
             self.attacking = False
 
     def reset_kick(self):
         if self.crouched:
-            self.image = pygame.image.load('Blue/Blue_Crouch.bmp')
+            self.image = pygame.image.load('Gold/Gold_Crouched.bmp')
             if self.rect.bottom < self.screen_rect.bottom + 20:
                 self.y = self.y + 80
             self.attacking = False
 
 
         elif self.crouched == False:
-            self.image = pygame.image.load('Blue/Blue_Neutral.bmp')
+            self.image = pygame.image.load('Gold/Gold_Neutral.bmp')
             if self.rect.bottom > self.screen_rect.bottom:
                 self.y = self.y - 80
             self.attacking = False
@@ -83,55 +83,52 @@ class Blue_Fighter(Sprite):
     def update(self):
         """Update the ship's position based on the movement flag."""
         self.screen.blit(self.image, self.rect)
-        #update Blue's x and y value, not the rect.
+        #update Gold's x and y value, not the rect.
         if self.moving_right and self.rect.right < self.screen_rect.right:
             if self.crouched:
-                self.x += self.settings.Blue_crouch_speed
+                self.x += self.settings.Gold_crouch_speed
             else:
-                self.x += self.settings.Blue_speed
+                self.x += self.settings.Gold_speed
         if self.moving_left and self.rect.left > 0:
             if self.crouched:
-                self.x -= self.settings.Blue_crouch_speed
+                self.x -= self.settings.Gold_crouch_speed
             else:
-                self.x -= self.settings.Blue_speed
+                self.x -= self.settings.Gold_speed
 
         #Jumping
         if self.jump and self.crouched == False and self.rect.bottom > self.screen_rect.bottom-15:
             self.jump = False
             for x in range(0,150):
-                self.y -= self.settings.Blue_jump_speed
+                self.y -= self.settings.Gold_jump_speed
         elif self.jump and self.rect.bottom < self.screen_rect.bottom-10:
             self.jump = False
 
         if self.jump == False and self.rect.bottom < self.screen_rect.bottom:
-            self.y += self.settings.Blue_fall_speed
+            self.y += self.settings.Gold_fall_speed
 
         #crouch behavior
         if self.crouched and self.punch == False and self.kick == False:
-            self.image = pygame.image.load('Blue/Blue_Crouch.bmp')
+            self.image = pygame.image.load('Gold/Gold_Crouched.bmp')
             if self.rect.bottom < self.screen_rect.bottom+20:
                 self.y = self.y + 80
 
 
-
         elif self.crouched == False and self.punch == False and self.kick == False:
-            self.image = pygame.image.load('Blue/Blue_Neutral.bmp')
+            self.image = pygame.image.load('Gold/Gold_Neutral.bmp')
             if self.rect.bottom > self.screen_rect.bottom:
                 self.y = self.y - 80
 
-
         #punch
-        if self.punch and self.current_time >= self.blue_punch_time + 250:
+        if self.punch and self.current_time >= self.gold_punch_time + 250:
             self.reset_punch()
             self.punch = False
 
         #kick
-        if self.kick and self.current_time >= self.blue_punch_time + 250:
+        if self.kick and self.current_time >= self.gold_punch_time + 250:
             self.finish_kick()
-        if self.kick and self.current_time >= self.blue_punch_time + 500:
+        if self.kick and self.current_time >= self.gold_punch_time + 500:
             self.reset_kick()
             self.kick = False
-
 
 
         #update rect object.
