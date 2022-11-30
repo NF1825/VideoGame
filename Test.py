@@ -38,6 +38,7 @@ class Game:
         """Update images on the screen, and flip to the new screen."""
         # Redraw the screen during each pass through the loop.
         self.screen.fill(self.settings.bg_color)
+        self.screen.blit(pygame.image.load("Blue/ring2.bmp"),(0,0))
         self.blue.blitme()
         self.gold.blitme()
         #self.screen.blit(self.txt, self.blue.screen_rect.midtop)
@@ -89,14 +90,15 @@ class Game:
             #Make gold crouch
             self.gold.crouched = True
 
-        elif event.key == pygame.K_1 and self.blue.kick == False:
+        elif event.key == pygame.K_BACKQUOTE and self.blue.kick == False:
             self.punch("blue")
+            print("bqpress")
             self.blue.blue_punch_time = pygame.time.get_ticks()
         elif event.key == pygame.K_m and self.gold.kick == False:
             self.punch("gold")
             self.gold.gold_punch_time = pygame.time.get_ticks()
 
-        elif event.key == pygame.K_2 and self.blue.punch == False:
+        elif event.key == pygame.K_1 and self.blue.punch == False:
             self.kick("blue")
             self.blue.blue_punch_time = pygame.time.get_ticks()
         elif event.key == pygame.K_COMMA and self.gold.punch == False:
@@ -142,6 +144,7 @@ class Game:
                 self.blue.image = self.blue.base_kick_prep
             elif self.blue.crouched:
                 self.blue.image = self.blue.low_kick_prep
+                print("kick")
         elif color == "gold":
             self.gold.kick = True
             if self.gold.crouched == False:
@@ -160,6 +163,7 @@ class Game:
             self.gold.moving_left = False
 
         if collisions and self.blue.attacking == True:
+            #Dylan helped me design the block feature
             if self.blue.kick and self.blue.crouched == False and self.gold.crouched:
                 if self.gold.rect.right <= self.gold.screen_rect.right - 150:
                     self.gold.x += 150
@@ -248,7 +252,6 @@ class Game:
             self.gold.update()
             self.check_collisions()
             #self.run_timer()
-
 
 
             self._update_screen()

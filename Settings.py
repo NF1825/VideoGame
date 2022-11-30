@@ -8,7 +8,7 @@ class Settings:
         #screen settings
         self.screen_width = 1200
         self.screen_height = 600
-        self.bg_color = (0, 0, 0)
+        self.bg_color = (255, 255, 255)
 
         # Blue settings
         self.Blue_health = 1000.0
