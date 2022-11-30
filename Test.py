@@ -19,12 +19,12 @@ class Game:
         self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         self.settings.screen_width = self.screen.get_rect().width
         self.settings.screen_height = self.screen.get_rect().height
-        pygame.display.set_caption("Fighter")
+        pygame.display.set_caption("Plebe Boxing")
         self.blue_punch_time = pygame.time.get_ticks()
         self.gold_punch_time = pygame.time.get_ticks()
         self.current_time = pygame.time.get_ticks()
 
-        self.font = pygame.font.Font(None, 40)
+        #self.font = pygame.font.Font(None, 40)
         self.color_blue = pygame.Color(0,0,255)
         self.color_gold = pygame.Color(255,215,0)
         self.color_white = pygame.Color(255,255,255)
@@ -247,7 +247,7 @@ class Game:
             self.blue.update()
             self.gold.update()
             self.check_collisions()
-            self.run_timer()
+            #self.run_timer()
 
 
 
