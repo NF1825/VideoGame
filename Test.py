@@ -23,29 +23,42 @@ class Game:
         self.blue_punch_time = pygame.time.get_ticks()
         self.gold_punch_time = pygame.time.get_ticks()
         self.current_time = pygame.time.get_ticks()
+        self.win_condition = False
+        self.bg_color2 = (255,255,255)
 
-        #self.font = pygame.font.Font(None, 40)
+
+        self.font = pygame.font.Font(None, 40)
         self.color_blue = pygame.Color(0,0,255)
         self.color_gold = pygame.Color(255,215,0)
-        self.color_white = pygame.Color(255,255,255)
+        self.color_black = pygame.Color(0,0,0)
 
         self.blue = Blue_Fighter(self)
         self.gold = Gold_Fighter(self)
+        self.display_time = (self.settings.timer_length / 60.0)
 
-        #self.txt = self.font.render(str(self.settings.timer_length), True, self.color_white)
+        self.txt = self.font.render(str(self.display_time), True, self.color_black, self.color_blue)
+        self.txt.rect = self.txt.get_rect()
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
         # Redraw the screen during each pass through the loop.
-        self.screen.fill(self.settings.bg_color)
-        self.screen.blit(pygame.image.load("Blue/ring2.bmp"),(0,0))
-        self.blue.blitme()
-        self.gold.blitme()
-        #self.screen.blit(self.txt, self.blue.screen_rect.midtop)
+        if self.win_condition == False:
+            self.screen.fill(self.settings.bg_color)
+            self.screen.blit(pygame.image.load("Blue/ring2.bmp"),(0,0))
+            self.blue.blitme()
+            self.gold.blitme()
+            self.screen.blit(self.txt, self.blue.screen_rect.midtop)
+            self.update_healthbar()
+            pygame.display.flip()
+            self.fps.tick(60)
+
+        elif self.win_condition:
+            self.screen.fill(self.bg_color2)
+            self.screen.blit(self.txt, (self.blue.screen_rect.center - (self.txt.rect.right-self.txt.rect.left)))
+
 
         #make the most recently drawn screen visible.
-        pygame.display.flip()
-        self.fps.tick(60)
+
 
 
     def _check_events(self):
@@ -229,17 +242,31 @@ class Game:
 
 
 
-    #def run_timer(self):
-       #while self.settings.timer_length >= 0.0:
-            #self.settings.timer_length -= self.settings.dt
-            #self.txt = self.font.render(str(self.settings.timer_length), True, self.color_white)
-        #self.temp = random.randint(0,1)
-        #if self.temp == 0:
-            #self.txt = self.font.render('Blue Wins!',True, self.color_blue)
-        #elif self.temp == 1:
-            #self.txt = self.font.render('Gold Wins!',True, self.color_gold)
+    def run_timer(self):
+       if self.settings.timer_length > 0.0 and self.win_condition == False:
+            self.settings.timer_length -= self.settings.dt
+            self.txt = self.font.render(str(round(self.settings.timer_length / 60)), True, self.color_black)
+       elif self.settings.timer_length == 0 and self.win_condition == False:
+            self.win_condition = True
+            self.settings.timer_length -= self.settings.dt
+            self.temp = random.randint(0,1)
+            if self.temp == 0:
+                self.txt = self.font.render('Blue Wins!',True, self.color_blue)
+            elif self.temp == 1:
+                self.txt = self.font.render('Gold Wins!',True, self.color_gold)
+       elif self.win_condition:
+           if self.settings.Blue_health == 0:
+               self.txt = self.font.render('Gold Wins!', True, self.color_gold)
 
 
+    def update_healthbar(self):
+        """update healthbars based on health"""
+        if self.settings.Gold_health == 0 or self.settings.Blue_health == 0:
+            self.win_condition = True
+        pygame.draw.rect(self.screen, self.color_black, ((self.blue.screen_rect.left,self.blue.screen_rect.top),(500,50)))
+        pygame.draw.rect(self.screen, self.color_blue,((self.blue.screen_rect.left,self.blue.screen_rect.top),((self.settings.Blue_health / 2), 50)))
+        pygame.draw.rect(self.screen, self.color_black, (((self.blue.screen_rect.right - 500),self.blue.screen_rect.top), (500,50)))
+        pygame.draw.rect(self.screen, self.color_gold, (((self.gold.screen_rect.right - (self.settings.Gold_health / 2)),self.gold.screen_rect.top),((self.settings.Gold_health / 2), 50)))
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -251,10 +278,13 @@ class Game:
             self.blue.update()
             self.gold.update()
             self.check_collisions()
-            #self.run_timer()
+
+            if self.settings.timer_length >= 0:
+                self.run_timer()
 
 
             self._update_screen()
+
 
 
 if __name__ == '__main__':

@@ -25,6 +25,6 @@ class Settings:
         self.Gold_crouch_speed = 2
 
         #timer
-        self.timer_length = 60.0
+        self.timer_length = 3600
         #seconds
-        self.dt = 0
+        self.dt = 1
