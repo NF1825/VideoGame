@@ -95,30 +95,26 @@ class Gold_Fighter(Sprite):
             else:
                 self.x -= self.settings.Gold_speed
 
-        #Jumping
-        if self.jump and self.crouched == False and self.rect.bottom > self.screen_rect.bottom-15:
-            self.jump = False
-            for x in range(0,150):
-                self.y -= self.settings.Gold_jump_speed
-        elif self.jump and self.rect.bottom < self.screen_rect.bottom-10:
-            self.jump = False
 
-        if self.jump == False and self.rect.bottom < self.screen_rect.bottom:
-            self.y += self.settings.Gold_fall_speed
+        # if self.jump == False and self.rect.bottom < self.screen_rect.bottom:
+          #  self.y += self.settings.Gold_fall_speed
 
-        #crouch behavior
+        # crouch behavior
         if self.crouched and self.punch == False and self.kick == False:
             self.image = pygame.image.load('Gold/Gold_Crouched.bmp')
-            if self.rect.bottom < self.screen_rect.bottom+20:
+            if self.rect.bottom < self.screen_rect.bottom + 20:
                 self.y = self.y + 80
+
 
 
         elif self.crouched == False and self.punch == False and self.kick == False:
             self.image = pygame.image.load('Gold/Gold_Neutral.bmp')
             if self.rect.bottom > self.screen_rect.bottom:
-                self.y = self.y - 80
+                self.y = 460.0
 
         #punch
+        if self.punch and self.current_time >= self.gold_punch_time + 15:
+            self.attacking = False
         if self.punch and self.current_time >= self.gold_punch_time + 250:
             self.reset_punch()
             self.punch = False
@@ -126,12 +122,20 @@ class Gold_Fighter(Sprite):
         #kick
         if self.kick and self.current_time >= self.gold_punch_time + 250:
             self.finish_kick()
+        if self.kick and self.current_time >= self.gold_punch_time + 265:
+            self.attacking = False
         if self.kick and self.current_time >= self.gold_punch_time + 500:
             self.reset_kick()
             self.kick = False
 
 
         #update rect object.
+        if self.rect.bottom < self.screen_rect.bottom:
+            if self.y == 459.99:
+                self.y += 460.00 - self.y
+            else:
+                self.y -= self.settings.Gold_jump_speed
+
         self.rect.x = self.x
         self.rect.y = self.y
 
