@@ -37,6 +37,14 @@ class Game:
 
         self.txt = self.font.render(str(self.display_time), True, self.color_black, self.color_blue)
 
+        # Music
+        self.bg_music = pygame.mixer.music.load("Gold/'Magic Spear I' - Ace Combat 7.mp3")
+
+    def reset_game(self):
+        self.win_condition = False
+
+
+
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
         # Redraw the screen during each pass through the loop.
@@ -188,30 +196,36 @@ class Game:
 
             elif self.blue.kick and not self.blue.crouched and not self.gold.crouched:
                 self.settings.Gold_health -= 25
+                pygame.mixer.Sound.play(self.gold.hurt, loops=0, maxtime=3000, fade_ms=0)
                 if self.gold.rect.right <= self.gold.screen_rect.right - 300:
                     self.gold.x += 300
             elif self.blue.punch and not self.blue.crouched and not self.gold.crouched:
                 self.settings.Gold_health -= 15
+                pygame.mixer.Sound.play(self.gold.hurt, loops=0, maxtime=3000, fade_ms=0)
                 if self.gold.rect.right <= self.gold.screen_rect.right - 150:
                     self.gold.x += 150
 
             elif self.blue.kick and self.blue.crouched and self.gold.crouched:
                 self.settings.Gold_health -= 25
+                pygame.mixer.Sound.play(self.gold.hurt, loops=0, maxtime=3000, fade_ms=0)
                 if self.gold.rect.right <= self.gold.screen_rect.right - 250:
                     self.gold.x += 250
 
             elif self.blue.punch and self.blue.crouched and self.gold.crouched:
                 self.settings.Gold_health -= 15
+                pygame.mixer.Sound.play(self.gold.hurt, loops=0, maxtime=3000, fade_ms=0)
                 if self.gold.rect.right <= self.gold.screen_rect.right - 125:
                     self.gold.x += 125
 
             elif self.blue.kick and self.blue.crouched and not self.gold.crouched:
                 self.settings.Gold_health -= 15
+                pygame.mixer.Sound.play(self.gold.hurt, loops=0, maxtime=3000, fade_ms=0)
                 if self.gold.rect.right <= self.gold.screen_rect.right - 150:
                     self.gold.x += 150
 
             elif self.blue.punch and self.blue.crouched and not self.gold.crouched:
                 self.settings.Gold_health -= 5
+                pygame.mixer.Sound.play(self.gold.hurt, loops=0, maxtime=3000, fade_ms=0)
                 if self.gold.rect.right <= self.gold.screen_rect.right - 75:
                     self.gold.x += 75
         # gold attacks
@@ -225,26 +239,32 @@ class Game:
 
             elif self.gold.kick and not self.gold.crouched and not self.blue.crouched:
                 self.settings.Blue_health -= 25
+                pygame.mixer.Sound.play(self.blue.hurt, loops=0, maxtime=3000, fade_ms=0)
                 if self.blue.rect.left >= self.blue.screen_rect.left + 300:
                     self.blue.x -= 300
             elif self.gold.punch and not self.gold.crouched and not self.blue.crouched:
                 self.settings.Blue_health -= 15
+                pygame.mixer.Sound.play(self.blue.hurt, loops=0, maxtime=3000, fade_ms=0)
                 if self.blue.rect.left >= self.blue.screen_rect.left + 150:
                     self.blue.x -= 150
             elif self.gold.kick and self.gold.crouched and self.blue.crouched:
                 self.settings.Blue_health -= 25
+                pygame.mixer.Sound.play(self.blue.hurt, loops=0, maxtime=3000, fade_ms=0)
                 if self.blue.rect.left >= self.blue.screen_rect.left + 250:
                     self.blue.x -= 250
             elif self.gold.punch and self.gold.crouched and self.blue.crouched:
                 self.settings.Blue_health -= 15
+                pygame.mixer.Sound.play(self.blue.hurt, loops=0, maxtime=3000, fade_ms=0)
                 if self.blue.rect.left >= self.blue.screen_rect.left + 125:
                     self.blue.x -= 125
             elif self.gold.kick and self.gold.crouched and not self.blue.crouched:
                 self.settings.Blue_health -= 15
+                pygame.mixer.Sound.play(self.blue.hurt, loops=0, maxtime=3000, fade_ms=0)
                 if self.blue.rect.left >= self.blue.screen_rect.left + 150:
                     self.blue.x -= 150
             elif self.gold.punch and self.gold.crouched and not self.blue.crouched:
                 self.settings.Gold_health -= 5
+                pygame.mixer.Sound.play(self.blue.hurt, loops=0, maxtime=3000, fade_ms=0)
                 if self.blue.rect.left >= self.blue.screen_rect.left + 75:
                     self.blue.x -= 75
 
@@ -276,9 +296,10 @@ class Game:
         pygame.draw.rect(self.screen, self.color_blue, ((self.blue.screen_rect.left, self.blue.screen_rect.top), ((self.settings.Blue_health / 2), 50)))
         pygame.draw.rect(self.screen, self.color_black, (((self.blue.screen_rect.right - 500), self.blue.screen_rect.top), (500, 50)))
         pygame.draw.rect(self.screen, self.color_gold, (((self.gold.screen_rect.right - (self.settings.Gold_health / 2)), self.gold.screen_rect.top), ((self.settings.Gold_health / 2), 50)))
-        
+
     def run_game(self):
         """Start the main loop for the game."""
+        pygame.mixer.music.play(loops=0, start=0.0, fade_ms=0)
         while True:
             self.current_time = pygame.time.get_ticks()
             self.blue.current_time = self.current_time

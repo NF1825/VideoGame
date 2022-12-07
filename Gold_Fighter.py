@@ -19,6 +19,9 @@ class Gold_Fighter(Sprite):
         self.image = pygame.image.load('Gold/Gold_Neutral.bmp')
         self.rect = self.image.get_rect()
 
+        #load soundfiles
+        self.hurt = pygame.mixer.Sound("Blue/steve-old-hurt-sound_XKZxUk4.mp3")
+
         #extra images
         self.base_punch = pygame.image.load('Gold/Gold_Punch.bmp')
         self.low_punch = pygame.image.load('Gold/Gold_Low_Punch.bmp')

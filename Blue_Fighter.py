@@ -19,6 +19,9 @@ class Blue_Fighter(Sprite):
         self.image = pygame.image.load('Blue/Blue_Neutral.bmp')
         self.rect = self.image.get_rect()
 
+        # load soundfiles
+        self.hurt = pygame.mixer.Sound("Gold/roblox-death-sound_1.mp3")
+
         #extra images
         self.base_punch = pygame.image.load('Blue/Blue_Punch2.bmp')
         self.low_punch = pygame.image.load('Blue/Blue_Low_Punch.bmp')
