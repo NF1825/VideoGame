@@ -42,6 +42,17 @@ class Game:
 
     def reset_game(self):
         self.win_condition = False
+        self.blue.remove()
+        self.gold.remove()
+
+        self.blue = Blue_Fighter(self)
+        self.gold = Gold_Fighter(self)
+
+        self.settings.Blue_health = 1000.0
+        self.settings.Gold_health = 1000.0
+
+        self.settings.timer_length = 3600
+
 
 
 
