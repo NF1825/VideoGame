@@ -3,6 +3,7 @@ import sys
 from Settings import Settings
 from Blue_Fighter import Blue_Fighter
 from Gold_Fighter import Gold_Fighter
+from button import Button
 import time
 import multiprocessing
 import random
@@ -24,12 +25,17 @@ class Game:
         self.gold_punch_time = pygame.time.get_ticks()
         self.current_time = pygame.time.get_ticks()
         self.win_condition = False
+        self.game_start = False
         self.bg_color2 = (255, 255, 255)
+
+        self.pregame = pygame.image.load("Gold/PreGame.bmp")
 
         self.font = pygame.font.Font(None, 40)
         self.color_blue = pygame.Color(0, 0, 255)
         self.color_gold = pygame.Color(255, 215, 0)
         self.color_black = pygame.Color(0, 0, 0)
+
+        self.play_button =Button(self, "Play")
 
         self.blue = Blue_Fighter(self)
         self.gold = Gold_Fighter(self)
@@ -59,22 +65,35 @@ class Game:
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
         # Redraw the screen during each pass through the loop.
-        if not self.win_condition:
-            self.screen.fill(self.settings.bg_color)
-            self.screen.blit(pygame.image.load("Blue/ring2.bmp"), (0, 0))
-            self.blue.blitme()
-            self.gold.blitme()
-            self.screen.blit(self.txt, self.blue.screen_rect.midtop)
-            self.update_healthbar()
-            pygame.display.flip()
-            self.fps.tick(60)
 
-        elif self.win_condition:
-            self.screen.fill(self.bg_color2)
-            self.screen.blit(self.txt, ((self.blue.screen_rect.centerx - 50), self.blue.screen_rect.centery))
+        # draw the play button if the game is inactive.
+        if not self.game_start:
+            self.screen.blit(self.pregame, (0, 0))
+            self.play_button.draw_button()
             pygame.display.flip()
 
-        # make the most recently drawn screen visible.
+        elif self.game_start:
+
+            if not self.win_condition:
+                self.screen.fill(self.settings.bg_color)
+                self.screen.blit(pygame.image.load("Blue/ring2.bmp"), (0, 0))
+                self.blue.blitme()
+                self.gold.blitme()
+                self.screen.blit(self.txt, self.blue.screen_rect.midtop)
+                self.update_healthbar()
+                pygame.display.flip()
+                self.fps.tick(60)
+
+            elif self.win_condition:
+                self.screen.fill(self.bg_color2)
+                self.screen.blit(self.txt, ((self.blue.screen_rect.centerx - 50), self.blue.screen_rect.centery))
+                pygame.display.flip()
+                time.sleep(4)
+                self.reset_game()
+                pygame.mouse.set_visible(True)
+                self.game_start = False
+
+            # make the most recently drawn screen visible.
 
     def gravity_update(self):
         self.settings.Blue_jump_speed -= self.settings.gravity
@@ -89,6 +108,10 @@ class Game:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
 
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
@@ -157,6 +180,16 @@ class Game:
             self.blue.crouched = False
         elif event.key == pygame.K_SEMICOLON:
             self.gold.crouched = False
+
+    def _check_play_button(self, mouse_pos):
+        """Start a new game when the player clicks play."""
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.game_start:
+            #Start the game
+            self.game_start = True
+
+            #hide the mouse cursor.
+            pygame.mouse.set_visible(False)
 
     def punch(self, color):
         if color == "blue":
